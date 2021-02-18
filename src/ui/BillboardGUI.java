@@ -1,6 +1,7 @@
 package ui;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javafx.collections.FXCollections;
@@ -16,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableColumn;
@@ -49,12 +51,17 @@ public class BillboardGUI {
 
     @FXML
     private TableColumn<Billboard, String> tcHeight;
+    
+    @FXML
+    private TableColumn<Billboard, String> tcArea;
 
     @FXML
     private TableColumn<Billboard, String> tcInUse;
 
     @FXML
     private TableColumn<Billboard, String> tcBrand;
+    
+     private ToggleGroup group;
     
     private InfrastructureDepartment infDepartment;
 
@@ -68,11 +75,12 @@ public class BillboardGUI {
 
   	private void initializeTableView() {
   		ObservableList<Billboard> observableList;
-    	observableList = FXCollections.observableArrayList(infDepartment.getContacts());
+    	observableList = FXCollections.observableArrayList(infDepartment.getBillboards());
     	
     	tvBillboardsList.setItems(observableList);
 		tcWidth.setCellValueFactory(new PropertyValueFactory<Billboard,String>("width"));
 		tcHeight.setCellValueFactory(new PropertyValueFactory<Billboard,String>("height"));
+		tcArea.setCellValueFactory(new PropertyValueFactory<Billboard,String>("area"));
 		tcInUse.setCellValueFactory(new PropertyValueFactory<Billboard,String>("in use"));
 		tcBrand.setCellValueFactory(new PropertyValueFactory<Billboard,String>("brand"));
   	}
@@ -82,6 +90,10 @@ public class BillboardGUI {
   		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Add-Billboard.fxml"));
     	fxmlLoader.setController(this);
     	Parent addBillboardPane = fxmlLoader.load();
+    	
+    	group = new ToggleGroup();
+  		rbYes.setToggleGroup(group);
+  		rbNo.setToggleGroup(group);
     	
     	mainPanel.getChildren().clear();
     	mainPanel.setCenter(addBillboardPane);
@@ -100,7 +112,24 @@ public class BillboardGUI {
 
 	@FXML
 	public void exportReport(ActionEvent event) {
-		
+		FileChooser fileChooser = new FileChooser();
+    	fileChooser.setTitle("Open Resource File");
+    	File f = fileChooser.showOpenDialog(mainPanel.getScene().getWindow());
+        if (f != null) {
+        	Alert alert = new Alert(AlertType.INFORMATION);
+    		alert.setTitle("Import Contacts");
+            try {
+            	infDepartment.exportDangerousBillboardReport(f.getAbsolutePath());
+				alert.setContentText("The billboards was exported");
+
+				alert.showAndWait();
+			} catch (FileNotFoundException e) {
+				alert.setContentText("The billboards was not exported");
+
+				alert.showAndWait();
+				e.printStackTrace();
+			}
+        }
 	}
 
 	@FXML
@@ -112,12 +141,12 @@ public class BillboardGUI {
     		Alert alert = new Alert(AlertType.INFORMATION);
     		alert.setTitle("Import Contacts");
     		try {
-    			infDepartment.(f.getAbsolutePath());
-				alert.setContentText("The contacts was imported");
+    			infDepartment.inportData(f.getAbsolutePath());
+				alert.setContentText("The billboards was imported");
 
 				alert.showAndWait();
 			} catch (IOException e) {
-				alert.setContentText("The contacts was NOT imported");
+				alert.setContentText("The billboards was not imported");
 
 				alert.showAndWait();
 				e.printStackTrace();
@@ -137,15 +166,31 @@ public class BillboardGUI {
 	
 	@FXML
 	public void addBillboard(ActionEvent event) {
+		boolean option = false;
+		if(rbYes.isSelected()) {
+			option = true;
+		}else if(rbNo.isSelected()) {
+			option = false;
+		}
+		double newWidth = Double.parseDouble(txtWidth.getText());
+    	double newheight = Double.parseDouble(txtHeight.getText());
+    	
+    	//String newOption = String.valueOf(option);
+    	Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Billboard added");
 		try {
-			listManager.addContact(txtName.getText(),txtEmail.getText());
-			txtName.setText("");
-	    	txtEmail.setText("");
-	    	labMsg.setText("The contact was added!");
+			infDepartment.addBillboard(newWidth,newheight, option, txtBrand.getText());
+			txtWidth.setText("");
+			txtHeight.setText("");
+			txtBrand.setText("");
+			alert.setContentText("The billboards was added");
+			alert.showAndWait();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			alert.setContentText("The billboards was not added");
+			alert.showAndWait();
 			e.printStackTrace();
-			labMsg.setText("The contact was not added!");
+			
 		}
     }
 	

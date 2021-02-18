@@ -27,6 +27,10 @@ public class InfrastructureDepartment {
 		saveBillboards();
 	}
 	
+	public List<Billboard> getBillboards(){
+		return billboards;
+	}
+	
 	public void saveBillboards() throws IOException {
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(BILLBOARD_FILE_NAME));
 		oos.writeObject(billboards);
