@@ -17,7 +17,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableColumn;
@@ -61,8 +60,6 @@ public class BillboardGUI {
     @FXML
     private TableColumn<Billboard, String> tcBrand;
     
-     private ToggleGroup group;
-    
     private InfrastructureDepartment infDepartment;
 
   	public BillboardGUI(InfrastructureDepartment id) {
@@ -91,16 +88,12 @@ public class BillboardGUI {
     	fxmlLoader.setController(this);
     	Parent addBillboardPane = fxmlLoader.load();
     	
-    	group = new ToggleGroup();
-  		rbYes.setToggleGroup(group);
-  		rbNo.setToggleGroup(group);
-    	
     	mainPanel.getChildren().clear();
     	mainPanel.setCenter(addBillboardPane);
 	}
 
 	@FXML
-	void loadShowBillboard(ActionEvent event) throws IOException {
+	public void loadShowBillboard(ActionEvent event) throws IOException {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Billboard-list.fxml"));
     	fxmlLoader.setController(this);
     	Parent billboardsPane = fxmlLoader.load();
@@ -117,14 +110,14 @@ public class BillboardGUI {
     	File f = fileChooser.showOpenDialog(mainPanel.getScene().getWindow());
         if (f != null) {
         	Alert alert = new Alert(AlertType.INFORMATION);
-    		alert.setTitle("Import Contacts");
+    		alert.setTitle("Export report");
             try {
             	infDepartment.exportDangerousBillboardReport(f.getAbsolutePath());
-				alert.setContentText("The billboards was exported");
+				alert.setContentText("The report was exported");
 
 				alert.showAndWait();
 			} catch (FileNotFoundException e) {
-				alert.setContentText("The billboards was not exported");
+				alert.setContentText("The report was not exported");
 
 				alert.showAndWait();
 				e.printStackTrace();
@@ -139,7 +132,7 @@ public class BillboardGUI {
     	File f = fileChooser.showOpenDialog(mainPanel.getScene().getWindow());
     	if(f != null) {
     		Alert alert = new Alert(AlertType.INFORMATION);
-    		alert.setTitle("Import Contacts");
+    		alert.setTitle("Import billboards");
     		try {
     			infDepartment.inportData(f.getAbsolutePath());
 				alert.setContentText("The billboards was imported");
@@ -156,30 +149,33 @@ public class BillboardGUI {
 
 	@FXML
 	public void About(ActionEvent event) {
-		
+		Alert alert = new Alert(AlertType.INFORMATION);
+	    alert.setTitle("Billboardr");
+	    alert.setHeaderText("Credits");
+	    alert.setContentText("Ricardo Medina\nAlgorithms II");
+	
+	    alert.showAndWait();
 	}
 
 	@FXML
 	public void Exit(ActionEvent event) {
-		
+		mainPanel.setDisable(false);
 	}
 	
 	@FXML
 	public void addBillboard(ActionEvent event) {
-		boolean option = false;
+		boolean use = false;
 		if(rbYes.isSelected()) {
-			option = true;
+			use = true;
 		}else if(rbNo.isSelected()) {
-			option = false;
+			use = false;
 		}
 		double newWidth = Double.parseDouble(txtWidth.getText());
     	double newheight = Double.parseDouble(txtHeight.getText());
-    	
-    	//String newOption = String.valueOf(option);
     	Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Billboard added");
 		try {
-			infDepartment.addBillboard(newWidth,newheight, option, txtBrand.getText());
+			infDepartment.addBillboard(newWidth,newheight, use, txtBrand.getText());
 			txtWidth.setText("");
 			txtHeight.setText("");
 			txtBrand.setText("");

@@ -4,15 +4,15 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <TableView fx:id="tvBillboardsList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="tcWidth" prefWidth="112.5" text="Width" />
-          <TableColumn fx:id="tcHeight" prefWidth="112.5" text="Height" />
-            <TableColumn fx:id="tcInUse" prefWidth="62.0" text="In Use" />
-            <TableColumn fx:id="tcBrand" prefWidth="164.0" text="Brand" />
+          <TableColumn fx:id="tcWidth" prefWidth="90.0" text="Width" />
+          <TableColumn fx:id="tcHeight" prefWidth="90.0" text="Height" />
+            <TableColumn fx:id="tcArea" prefWidth="90.0" text="Area" />
+            <TableColumn fx:id="tcInUse" prefWidth="60.0" text="In Use" />
+            <TableColumn fx:id="tcBrand" prefWidth="120.0" text="Brand" />
         </columns>
       </TableView>
    </center>

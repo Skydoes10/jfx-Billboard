@@ -1,9 +1,13 @@
 package ui;
 
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import model.InfrastructureDepartment;
 
@@ -15,6 +19,21 @@ public class Main extends Application {
 	public Main() {
 		InfDepartment = new InfrastructureDepartment();
 		billboardGUI = new BillboardGUI(InfDepartment);
+		boolean loadBillboards;
+		try {
+			loadBillboards = InfDepartment.loadBillboard();
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			loadBillboards = false;
+			e.printStackTrace();
+		}
+		
+		if(!loadBillboards) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Billboard");
+			alert.setContentText("Error loading data from file");
+			alert.showAndWait();
+		}
 	}
 
 	public static void main(String[] args) {
